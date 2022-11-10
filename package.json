@@ -1,0 +1,23 @@
+{
+  "name": "nodejs-passport-auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rr-sk-dev/nodejs-passport-auth.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rr-sk-dev/nodejs-passport-auth/issues"
+  },
+  "homepage": "https://github.com/rr-sk-dev/nodejs-passport-auth#readme",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
