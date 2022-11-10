@@ -1,5 +1,7 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
+const env = dotenv.config();
+dotenvExpand.expand(env);
 
 const requiredEnvVars: Array<string> = ['RUNTIME_ENVIRONMENT', 'PROTOCOL', 'HOST', 'PORT'];
 
@@ -9,7 +11,7 @@ const missingVariables: Array<string> = [];
 export const loadEnvironmentVariables = () => {
   requiredEnvVars.forEach((envVar) => {
     if (!process.env[envVar]) {
-      console.log(envVar, missingVariables);
+      missingVariables.push(envVar);
     }
   });
 
