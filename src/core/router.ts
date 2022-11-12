@@ -1,11 +1,5 @@
-import Koa from 'koa';
+import Router from 'koa-router';
 
-export abstract class RoutesConfig {
-  prefix: string;
+const baseUrl = '/api';
 
-  constructor(name: string) {
-    this.prefix = `/api/${name}`;
-  }
-
-  abstract configureRoutes(app: Koa<Koa.DefaultState, Koa.DefaultContext>): void;
-}
+export const createRouter = (module: string) => new Router({ prefix: `${baseUrl}/${module}` });

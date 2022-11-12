@@ -3,8 +3,9 @@ import { loadEnvironmentVariables } from './core/utils';
 loadEnvironmentVariables();
 
 import Koa from 'koa';
+import koaBody from 'koa-body';
 import { connectToDatabase } from './core/database';
-import { UsersRoutes } from './users/user.routes';
+import { usersRouter } from './users/users.controller';
 
 async function run() {
   // Connect to the database
@@ -13,9 +14,11 @@ async function run() {
   // Create an app instance
   const app = new Koa();
 
+  // Koa body parser
+  app.use(koaBody());
+
   // Register server routes
-  const userRoutes = new UsersRoutes();
-  userRoutes.configureRoutes(app);
+  app.use(usersRouter.routes()).use(usersRouter.allowedMethods());
 
   // Start the server
   app.listen(process.env.PORT);
