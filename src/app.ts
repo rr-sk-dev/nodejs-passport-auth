@@ -3,13 +3,27 @@ import { loadEnvironmentVariables } from './core/utils';
 loadEnvironmentVariables();
 
 import Koa from 'koa';
+import { UsersRoutes } from './users/user.routes';
 
-const app = new Koa();
+async function run() {
+  // Create an app instance
+  const app = new Koa();
 
-app.use(async (ctx) => {
-  ctx.body = 'Hello World';
-});
+  // Register server routes
+  const userRoutes = new UsersRoutes();
+  userRoutes.configureRoutes(app);
 
-app.listen(process.env.PORT);
+  // Start the server
+  app.listen(process.env.PORT);
 
-console.log(`Server running on ${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT} `);
+  if (process.env.RUNTIME_ENVIRONMENT === 'local') {
+    console.log(`Server running on ${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT} `);
+  }
+}
+
+try {
+  run();
+} catch (err) {
+  console.log(err);
+  process.exit(-1);
+}
