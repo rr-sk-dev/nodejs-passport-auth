@@ -1,15 +1,7 @@
 import { model, Schema } from 'mongoose';
+import { CreateUserDto } from './dtos/create-user.dto';
 
-interface User {
-  createdAt: Date;
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-}
-
-const userSchema = new Schema<User>({
-  createdAt: { default: Date.now(), type: Date },
+const userSchema = new Schema<CreateUserDto>({
   email: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },

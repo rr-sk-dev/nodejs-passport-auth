@@ -1,22 +1,36 @@
 import { ParameterizedContext } from 'koa';
 import { createRouter } from '../core/router';
-import { UserDto } from './user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { User } from './user.model';
+import * as UsersService from './users.service';
 
 const router = createRouter('users');
 
-router.get('/', getUsers);
-router.post('/', createUser);
+router.get('/', getUsers); // '/users'
+router.post('/', createUser); // '/users'
 
 async function getUsers(ctx: ParameterizedContext) {
-  ctx.body = 'get users';
+  ctx.body = await User.find();
 }
 
 async function createUser(ctx: ParameterizedContext) {
-  const payload = ctx.request.body as UserDto;
+  const { email, firstName, lastName, password } = ctx.request.body as CreateUserDto;
+  console.log('[Request] Create User', { email, firstName, lastName, password });
 
-  console.log(payload);
+  const existingEmail = await UsersService.getUser(email);
 
-  ctx.body = payload;
+  if (existingEmail) {
+    console.log('[ERROR] Email already exists', existingEmail);
+    ctx.throw(400, { message: 'Email already exists' });
+  }
+
+  const passwordHash = await CreateUserDto.getPasswordHash(password);
+
+  const user = await UsersService.createUser({ email, firstName, lastName, password: passwordHash });
+
+  console.log('[INFO] User Created', user);
+
+  ctx.body = user;
 }
 
-export { router as usersRouter };
+export { router as usersController };

@@ -5,7 +5,7 @@ loadEnvironmentVariables();
 import Koa from 'koa';
 import koaBody from 'koa-body';
 import { connectToDatabase } from './core/database';
-import { usersRouter } from './users/users.controller';
+import { usersController } from './users/users.controller';
 
 async function run() {
   // Connect to the database
@@ -18,7 +18,7 @@ async function run() {
   app.use(koaBody());
 
   // Register server routes
-  app.use(usersRouter.routes()).use(usersRouter.allowedMethods());
+  app.use(usersController.routes()).use(usersController.allowedMethods());
 
   // Start the server
   app.listen(process.env.PORT);
