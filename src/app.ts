@@ -1,36 +1,41 @@
 // Environment Variables
-import { loadEnvironmentVariables } from './core/utils';
+import { loadEnvironmentVariables } from './core/configs';
 loadEnvironmentVariables();
 
+import { blue, yellow } from 'chalk';
 import Koa from 'koa';
 import koaBody from 'koa-body';
-import { connectToDatabase } from './core/database';
-import { usersController } from './users/users.controller';
+import morgan from 'koa-morgan';
+import { MongoDB } from './core/database/database';
+import { usersRouter } from './users/routes/routes';
 
-async function run() {
-  // Connect to the database
-  await connectToDatabase();
-
+async function start() {
   // Create an app instance
   const app = new Koa();
+
+  const mongoDB = new MongoDB();
+  await mongoDB.connect();
+
+  app.use(morgan('common'));
 
   // Koa body parser
   app.use(koaBody());
 
   // Register server routes
-  app.use(usersController.routes()).use(usersController.allowedMethods());
+  app.use(usersRouter.routes()).use(usersRouter.allowedMethods());
 
   // Start the server
   app.listen(process.env.PORT);
 
   if (process.env.RUNTIME_ENVIRONMENT === 'local') {
-    console.log(`Server running on ${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT} `);
+    console.log(
+      blue('Server running on ') + yellow(`${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}`)
+    );
   }
 }
 
 try {
-  run();
+  start();
 } catch (err) {
-  console.log(err);
-  process.exit(-1);
+  throw new Error('Unknown error');
 }

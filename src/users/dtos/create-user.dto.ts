@@ -1,12 +1,7 @@
-import { hash } from 'bcrypt';
+import { User } from '../entities/user.entity';
 
-export class CreateUserDto {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-
-  static async getPasswordHash(password: string) {
-    return await hash(password, 5);
-  }
-}
+/**
+ *  When creating a user, this should contain all the fields that
+ * are required for it.
+ */
+export type CreateUserDto = Pick<User, 'email' | 'password' | 'firstName' | 'lastName'>;
