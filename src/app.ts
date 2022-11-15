@@ -7,7 +7,7 @@ import Koa from 'koa';
 import koaBody from 'koa-body';
 import morgan from 'koa-morgan';
 import { MongoDB } from './core/database/database';
-import { usersRouter } from './users/routes/routes';
+import { filterUserObject, usersRouter } from './users/routes/routes';
 
 async function start() {
   // Create an app instance
@@ -22,7 +22,7 @@ async function start() {
   app.use(koaBody());
 
   // Register server routes
-  app.use(usersRouter.routes()).use(usersRouter.allowedMethods());
+  app.use(usersRouter.routes()).use(usersRouter.allowedMethods()).use(filterUserObject);
 
   // Start the server
   app.listen(process.env.PORT);
