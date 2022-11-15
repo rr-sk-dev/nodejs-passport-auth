@@ -1,12 +1,11 @@
-import { hash } from 'bcrypt';
 import { User } from '../entities/user.entity';
-import { RepositoryUser, UserDocument } from '../models/user.model';
+import { RepositoryUser, UserDocument } from './models/user.model';
 import { IUsersRepository } from './users-repository.interface';
 
 export class MongoDBUsersRepository implements IUsersRepository {
   constructor() {}
 
-  async listAll(): Promise<User[]> {
+  async getAll(): Promise<User[]> {
     const data = await UserDocument.find();
 
     return data.map(this.mapToUser);
@@ -25,21 +24,15 @@ export class MongoDBUsersRepository implements IUsersRepository {
   }
 
   async save(user: User): Promise<User> {
-    console.log('[INFO] User to be created', user);
-
-    const passwordHash = await hash(user.password, 5);
-
     const repoUser: RepositoryUser = {
       _id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      passwordHash: passwordHash,
+      passwordHash: user.passwordHash,
     };
 
     const data = await UserDocument.create(repoUser);
-
-    console.log('[INFO] User created', data);
 
     return this.mapToUser(data);
   }
@@ -58,14 +51,12 @@ export class MongoDBUsersRepository implements IUsersRepository {
     const user = new User(
       {
         email: data.email,
-        password: undefined,
         firstName: data.firstName,
         lastName: data.lastName,
+        passwordHash: data.passwordHash,
       },
       data._id
     );
-
-    delete user.password;
 
     return user;
   }

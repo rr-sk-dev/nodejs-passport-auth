@@ -1,3 +1,4 @@
+import { hash } from 'bcrypt';
 import { red } from 'chalk';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { User } from '../entities/user.entity';
@@ -7,11 +8,17 @@ export class UsersService {
   constructor(private usersRepository: IUsersRepository) {}
 
   async getUsers(): Promise<User[]> {
-    return this.usersRepository.listAll();
+    return await this.usersRepository.getAll();
   }
 
   async getUser(id: string): Promise<User> {
-    return this.usersRepository.findById(id);
+    const user = await this.usersRepository.findById(id);
+
+    if (user === null) {
+      throw new Error('User not found.');
+    }
+
+    return user;
   }
 
   async createUser(data: CreateUserDto): Promise<User> {
@@ -26,11 +33,14 @@ export class UsersService {
     }
 
     // 2. Create a new user.
-    const user = new User(data);
+    const user = new User({
+      email: data.email,
+      passwordHash: await hash(data.password, 5),
+      firstName: data.firstName,
+      lastName: data.lastName,
+    });
 
-    await this.usersRepository.save(user);
-
-    return user;
+    return await this.usersRepository.save(user);
   }
 
   async updateUser(id: string, user: User): Promise<User> {
@@ -47,7 +57,7 @@ export class UsersService {
 
     // TODO: map the received user to not override properties like "id", "password", etc...
 
-    return this.usersRepository.save(user);
+    return await this.usersRepository.save(user);
   }
 
   async deleteUser(id: string): Promise<string> {

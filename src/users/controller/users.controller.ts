@@ -1,4 +1,4 @@
-import { ParameterizedContext } from 'koa';
+import { IMiddleware } from 'koa-router';
 import { UsersService } from '../service/users.service';
 
 // TODO: input validations (sanitize, check agains the model, etc..)
@@ -7,23 +7,28 @@ import { UsersService } from '../service/users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  getUsers = async (ctx: ParameterizedContext): Promise<void> => {
+  getUsers: IMiddleware = async (ctx, next): Promise<void> => {
     ctx.body = await this.usersService.getUsers();
+    next();
   };
 
-  getUser = async (ctx: ParameterizedContext): Promise<void> => {
+  getUser: IMiddleware = async (ctx, next): Promise<void> => {
     ctx.body = await this.usersService.getUser(ctx.params.id);
+    next();
   };
 
-  createUser = async (ctx: ParameterizedContext): Promise<void> => {
+  createUser: IMiddleware = async (ctx, next): Promise<void> => {
     ctx.body = await this.usersService.createUser(ctx.request.body);
+    next();
   };
 
-  updateUser = async (ctx: ParameterizedContext): Promise<void> => {
+  updateUser: IMiddleware = async (ctx, next): Promise<void> => {
     ctx.body = await this.usersService.updateUser(ctx.params.id, ctx.request.body);
+    next();
   };
 
-  deleteUser = async (ctx: ParameterizedContext): Promise<void> => {
+  deleteUser: IMiddleware = async (ctx, next): Promise<void> => {
     ctx.body = await this.usersService.deleteUser(ctx.params.id);
+    next();
   };
 }
