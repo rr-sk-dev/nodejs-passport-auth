@@ -7,7 +7,7 @@ import Koa from 'koa';
 import koaBody from 'koa-body';
 import morgan from 'koa-morgan';
 import { MongoDB } from './core/database/database';
-import { filterUserObject, usersRouter } from './users/routes/routes';
+import { filterUserObject, usersRouter } from './users/routes/user.routes';
 
 async function start() {
   // Create an app instance
